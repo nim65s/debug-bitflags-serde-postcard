@@ -10,3 +10,4 @@ bitflags = { version = "2.0.0-rc.1", git = "https://github.com/nim65s/bitflags" 
 serde = { version = "1.0.151", default-features = false, features = ["derive"] }
 postcard = { version = "1.0.2", features = ["experimental-derive"] }
 heapless = { version = "0.7.16" }
+serde_json = { version = "1.0.91", default-features = false, features = ["alloc"] }

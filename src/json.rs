@@ -1,6 +1,6 @@
-use postcard::experimental::max_size::MaxSize;
+extern crate alloc;
 
-#[derive(serde::Deserialize, serde::Serialize, Debug, Clone, Copy, PartialEq, Eq, MaxSize)]
+#[derive(serde::Deserialize, serde::Serialize, Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Message {
     Start,
     Stop,
@@ -15,24 +15,20 @@ bitflags::bitflags! {
     }
 }
 
-impl MaxSize for Issue {
-    const POSTCARD_MAX_SIZE: usize = 1;
-}
-
-/// wrap postcard functions
+/// wrap serde_json functions
 #[allow(clippy::missing_errors_doc)]
-pub trait Wire<const MAX_SIZE: usize>: serde::Serialize + for<'a> serde::Deserialize<'a> {
-    fn to_vec(self) -> postcard::Result<heapless::Vec<u8, MAX_SIZE>> {
-        postcard::to_vec(&self)
+pub trait Wire: serde::Serialize + for<'a> serde::Deserialize<'a> {
+    fn to_string(self) -> serde_json::Result<alloc::string::String> {
+        serde_json::to_string(&self)
     }
 
-    fn take_from_bytes(value: &[u8]) -> postcard::Result<(Self, &[u8])> {
-        postcard::take_from_bytes(value)
+    fn from_str(value: &str) -> serde_json::Result<Self> {
+        serde_json::from_str(value)
     }
 }
 
-impl Wire<{ Self::POSTCARD_MAX_SIZE }> for Issue {}
-impl Wire<{ Self::POSTCARD_MAX_SIZE }> for Message {}
+impl Wire for Issue {}
+impl Wire for Message {}
 
 #[cfg(test)]
 mod tests {
@@ -43,21 +39,19 @@ mod tests {
     fn wire_issue() {
         let issue_in = Issue::TIMEOUT | Issue::WRONG_CRC;
         std::println!("issue_in: {issue_in:?}");
-        let serialied = issue_in.to_vec().expect("can't serialize");
+        let serialied = issue_in.to_string().expect("can't serialize");
         std::println!("serialied: {serialied:?}");
-        let (issue_out, extra) = Issue::take_from_bytes(&serialied).expect("can't deserialize");
+        let issue_out = Issue::from_str(&serialied).expect("can't deserialize");
         assert_eq!(issue_in, issue_out);
-        assert_eq!(extra.len(), 0);
     }
 
     #[test]
     fn wire_message() {
         let message_in = Message::Stop;
         std::println!("message_in: {message_in:?}");
-        let serialied = message_in.to_vec().expect("can't serialize");
+        let serialied = message_in.to_string().expect("can't serialize");
         std::println!("serialied: {serialied:?}");
-        let (message_out, extra) = Message::take_from_bytes(&serialied).expect("can't deserialize");
+        let message_out = Message::from_str(&serialied).expect("can't deserialize");
         assert_eq!(message_in, message_out);
-        assert_eq!(extra.len(), 0);
     }
 }
