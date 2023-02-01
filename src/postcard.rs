@@ -43,9 +43,9 @@ mod tests {
     fn wire_issue() {
         let issue_in = Issue::TIMEOUT | Issue::WRONG_CRC;
         std::println!("issue_in: {issue_in:?}");
-        let serialied = issue_in.to_vec().expect("can't serialize");
-        std::println!("serialied: {serialied:?}");
-        let (issue_out, extra) = Issue::take_from_bytes(&serialied).expect("can't deserialize");
+        let serialized = issue_in.to_vec().expect("can't serialize");
+        std::println!("serialized: {serialized:?}");
+        let (issue_out, extra) = Issue::take_from_bytes(&serialized).expect("can't deserialize");
         assert_eq!(issue_in, issue_out);
         assert_eq!(extra.len(), 0);
     }
@@ -54,9 +54,9 @@ mod tests {
     fn wire_message() {
         let message_in = Message::Stop;
         std::println!("message_in: {message_in:?}");
-        let serialied = message_in.to_vec().expect("can't serialize");
-        std::println!("serialied: {serialied:?}");
-        let (message_out, extra) = Message::take_from_bytes(&serialied).expect("can't deserialize");
+        let serialized = message_in.to_vec().expect("can't serialize");
+        std::println!("serialized: {serialized:?}");
+        let (message_out, extra) = Message::take_from_bytes(&serialized).expect("can't deserialize");
         assert_eq!(message_in, message_out);
         assert_eq!(extra.len(), 0);
     }
