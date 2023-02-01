@@ -1,5 +1,5 @@
 #![no_std]
 
-mod postcard;
-mod postcard_custom;
 mod json;
+mod postcard;
+mod postcard_u8;
