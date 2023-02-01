@@ -20,7 +20,7 @@ checksum = "d468802bab17cbc0cc575e9b053f41e72aa36bfa6b7f55e3529ffa43161b97fa"
 [[package]]
 name = "bitflags"
 version = "2.0.0-rc.1"
-source = "git+https://github.com/nim65s/bitflags#3b33102d863cdcde750c901045998369a78f8dfb"
+source = "git+https://github.com/bitflags/bitflags#3cd7a61267a4503a2d002e3ed68d09a52d23a2a7"
 dependencies = [
  "serde",
 ]
